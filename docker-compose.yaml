@@ -58,6 +58,20 @@ services:
     networks:
       - q_net
 
+  frontend:
+    build: ./frontend
+   # image: registry-ui.vecskill.ovec/my-image:latest  # ใช้สำหรับ production
+    ports:
+      - "3000:3000" 
+    environment:
+      NUXT_PUBLIC_API: http://localhost:81
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    profiles:
+      - production    # ถ้าเรียก profile production จะใช้ image จาก registry
+    networks:
+      - q_net
 
 volumes:
   mysql_data:

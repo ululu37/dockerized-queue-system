@@ -20,6 +20,8 @@ export function useAuth() {
       }
     } catch (err) {
       console.log("getPayload error:", err);
+     // navigateTo("/login");
+     router.push("/login");
     }
   }
 

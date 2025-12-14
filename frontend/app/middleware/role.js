@@ -2,14 +2,10 @@ export default defineNuxtRouteMiddleware(async(to,from) => {
   const { user,getMe } = useAuth();
   if (!user.value) {
      try {
-      await getMe()
+      return await getMe()
      } catch (error) {
-     
-      return  navigateTo('/login')
+
      } 
-   }
-   if (!user.value) {
-     return  navigateTo('/login')
    }
   if (user.value.role == 0) {
     to.meta.layout = "admin";

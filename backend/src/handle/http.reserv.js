@@ -11,9 +11,10 @@ import fileRouter from "./router/file.js";
 import queueRouter from "./router/queue.js"
 import cookieParser from "cookie-parser";
 import cors from "cors"
-
+import authUsecase from "../usecase/auth.js";
 
 export default  () => {
+  authUsecase.create_root();
   app.use(express.json());
   app.use(cookieParser());
 

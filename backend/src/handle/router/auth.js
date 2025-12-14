@@ -5,8 +5,6 @@ import { body,query } from "express-validator";
 import errValidator from "../middlewere/err.validator.js";
 import permit from "../middlewere/permit.js";
 
-
-
 router.post('/',
     [
         body('username')
