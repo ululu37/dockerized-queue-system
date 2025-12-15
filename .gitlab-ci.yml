@@ -1,6 +1,7 @@
 stages:
   - test
-  - build
+  - build_backend
+  - build_frontend
   - deploy
 
 # -----------------------------
@@ -10,6 +11,7 @@ test_job:
   stage: test
   image: node:22
   script:
+    - cd backend
     - npm install
     - npm test
   tags:
@@ -20,7 +22,25 @@ test_job:
 # -----------------------------
 # BUILD STAGE
 # -----------------------------
-build:
+build_frontend:
+  stage: build_frontend
+  image: docker:24
+  services:
+    - docker:24-dind   # ต้องการ docker-in-docker
+  variables:
+    DOCKER_TLS_CERTDIR: "" # ปิด TLS
+  tags:
+    - local
+  script:
+    - docker info
+    - cd frontend
+    - docker build -t my-frontend .
+    - docker tag my-frontend registry-ui.vecskill.ovec/my-image:latest
+    - docker push registry-ui.vecskill.ovec/my-frontend:latest
+  only:
+    - main
+
+  build_backend:
   stage: build
   image: docker:24
   services:
@@ -31,11 +51,13 @@ build:
     - local
   script:
     - docker info
-    - docker build -t my-image .
-    - docker tag my-image registry-ui.vecskill.ovec/my-image:latest
-    - docker push registry-ui.vecskill.ovec/my-image:latest
+    - cd backend
+    - docker build -t my-backend .
+    - docker tag my-image registry-ui.vecskill.ovec/my-backend:latest
+    - docker push registry-ui.vecskill.ovec/my-backend:latest
   only:
     - main
+
 
 # -----------------------------
 # DEPLOY STAGE (SSH to Production)
@@ -59,6 +81,7 @@ deploy_to_production:
     # 2) SSH เพื่อ pull + deploy เวอร์ชันใหม่ f
     - ssh root@192.168.100.102 "
         cd /opt &&
+        mkdir -p backend/files &&
         docker compose pull &&
         docker compose --profile production up -d --remove-orphans
       "

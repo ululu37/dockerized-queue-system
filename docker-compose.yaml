@@ -35,8 +35,8 @@ services:
       - q_net
 
   backend:
-    build: ./backend
-   # image: registry-ui.vecskill.ovec/my-image:latest  # ใช้สำหรับ production
+    #build: ./backend
+    image: registry-ui.vecskill.ovec/my-backend:latest  # ใช้สำหรับ production
     ports:
       - "81:80" 
     environment:
@@ -60,11 +60,11 @@ services:
 
   frontend:
     build: ./frontend
-   # image: registry-ui.vecskill.ovec/my-image:latest  # ใช้สำหรับ production
+    image: registry-ui.vecskill.ovec/my-frontend:latest  # ใช้สำหรับ production
     ports:
       - "3000:3000" 
     environment:
-      NUXT_PUBLIC_API: http://localhost:81
+      NUXT_PUBLIC_API: http://192.168.100.2:81
       NODE_OPTIONS: "--max-old-space-size=4096"
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
